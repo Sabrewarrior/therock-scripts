@@ -7,8 +7,14 @@ import signal
 from pathlib import Path
 
 # --- Configuration ---
-output_base_dir = Path(os.environ['THEROCK_OUTPUT_DIR']).resolve()
-source_dir = Path(os.environ['THEROCK_SOURCE_DIR']).resolve()
+try:
+    output_base_dir = Path(os.environ['THEROCK_OUTPUT_DIR']).resolve()
+except:
+    output_base_dir = Path(os.getcwd()).resolve()
+try:
+    source_dir = Path(os.environ['THEROCK_SOURCE_DIR']).resolve()
+except:
+    source_dir = Path(os.getcwd()).resolve()
 
 CCACHE_EXECUTABLE = "ccache"
 
@@ -72,7 +78,12 @@ def run_command(cmd_list, cwd=None):
     print(f"--- Command finished successfully in {end_time - start_time:.2f} seconds ---", flush=True)
     return process
 
-# 1. CMake Configure Step
+# 1. Print environment variables
+env_check_cmd = [
+        "python","-c","import os; print('\\n'.join(f'{key}:{value}' for key, value in os.environ.items()))"]
+run_command(env_check_cmd)
+
+# 2. CMake Configure Step
 # Pass through any extra arguments given to this python script ($@)
 cmake_configure_cmd = [
     "cmake",
@@ -84,7 +95,7 @@ cmake_configure_cmd.extend(sys.argv[1:]) # Add extra arguments from script call
 
 run_command(cmake_configure_cmd)
 
-# 2. CMake Build Step
+# 3. CMake Build Step
 cmake_build_cmd = [
     "cmake",
     "--build", str(build_dir.resolve())
