@@ -45,5 +45,5 @@ python ./build_tools/fetch_sources.py
 Load Visual Studio environment variables and build using the python script
 ```
 "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat" -arch=amd64
-python therock-build.py -DTHEROCK_AMDGPU_FAMILIES=gfx1151 -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded
+python therock-build.py -DTHEROCK_AMDGPU_FAMILIES=gfx1100 -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded
 ```
