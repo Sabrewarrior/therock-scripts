@@ -1,0 +1,41 @@
+diff --git a/build_tools/fileset_tool.py b/build_tools/fileset_tool.py
+index f93c0fe..0ec206d 100644
+--- a/build_tools/fileset_tool.py
++++ b/build_tools/fileset_tool.py
+@@ -20,7 +20,7 @@ import platform
+ import sys
+ import shutil
+ import tarfile
+-
++import time
+ from _therock_utils.artifacts import ArtifactPopulator
+ from _therock_utils.hash_util import calculate_hash, write_hash
+ from _therock_utils.pattern_match import PatternMatcher
+@@ -132,13 +132,20 @@ def do_list(args: argparse.Namespace, pm: PatternMatcher):
+ def do_copy(args: argparse.Namespace, pm: PatternMatcher):
+     verbose = args.verbose
+     destdir: Path = args.dest_dir
+-    pm.copy_to(
+-        destdir=destdir,
+-        verbose=verbose,
+-        always_copy=args.always_copy,
+-        remove_dest=args.remove_dest,
+-    )
+-
++    endtime = time.time() + 60
++    while(True):
++        try:
++            pm.copy_to(
++                destdir=destdir,
++                verbose=verbose,
++                always_copy=args.always_copy,
++                remove_dest=args.remove_dest,
++            )
++            break
++        except:
++            if (time.time() > endtime):
++                raise
++            time.sleep(1)
+ 
+ def do_artifact(args):
+     """Produces an 'artifact directory', which is a slice of installed stage/
